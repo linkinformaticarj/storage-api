@@ -1,0 +1,15 @@
+{
+    "name": "linkinfo/storage",
+    "description": "API de Storage.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eduardo Vieira",
+            "email": "edgvi10@gmail.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "3.*",
+        "edgvi10/phphelpers": "dev-master"
+    }
+}
