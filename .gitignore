@@ -1,3 +1,5 @@
 /vendor/
 /Public/storage/*
 composer.lock
+
+.env
