@@ -45,13 +45,13 @@ $slim->group("/{auth}/{slug}", function ($slim) {
         $type = $request->getHeader("HTTP_CONTENT_TYPE")[0];
         $return["type"] = $type;
 
-        $filepath = __DIR__ . "/storage/{$args["slug"]}";
+        $filepath = __DIR__ . "/files/{$args["slug"]}";
 
         $glob = glob("{$filepath}/*");
 
         foreach ($glob as $file) :
             $filename = array_reverse(explode("/", $file))[0];
-            $fileurl = "{$env->storage_url}/storage/{$args["slug"]}/" . array_reverse(explode("/", $file))[0];
+            $fileurl = "{$env->storage_url}/files/{$args["slug"]}/" . array_reverse(explode("/", $file))[0];
             $files[] = (object)[
                 "name" => $filename,
                 "url" => $fileurl,
@@ -63,49 +63,14 @@ $slim->group("/{auth}/{slug}", function ($slim) {
         if ($type === "application/json") :
             return $response->withJson($return, 200);
         else :
-?>
-            <!DOCTYPE html>
-            <html lang="en">
+            $html = "<h3>Arquivos de: {$args["slug"]}</h3>";
+            $html .= "<ul style=\"list-style: none;\">";
 
-            <head>
-                <meta charset="UTF-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Arquivos</title>
-
-                <style>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                    }
-
-                    body {
-                        font-family: sans-serif;
-                    }
-
-                    li {
-                        border-top: 1px solid #ddd;
-                        padding: 5px;
-                    }
-                </style>
-            </head>
-
-            <body>
-                <h3>Arquivos de: <?= $args["slug"]; ?></h3>
-                <ul style="list-style: none;">
-                    <?php
-                    foreach ($files as $file) :
-                    ?>
-                        <li><?= $file->name ?><br>(<a href="<?= $file->url ?>"><?= $file->url ?></a>)</li>
-                    <?php
-                    endforeach;
-                    ?>
-                </ul>
-            </body>
-
-            </html>
-<?php
-        // return $response->write($return, 200);
+            foreach ($files as $file) :
+                $html .= "<li>{$file->name}<br>(<a href=\"{$file->url}\">{$file->url}</a>)</li>";
+            endforeach;
+            $html .= "</ul>";
+            return $response->write($html, 200);
         endif;
     });
 
@@ -143,7 +108,7 @@ $slim->group("/{auth}/{slug}", function ($slim) {
 
                     $ext = $filetypes[$mimetype];
                     $filename = $data["filename"] ?? date("YmdHis") . ".{$ext}";
-                    $filepath = __DIR__ . "/storage/{$args["slug"]}";
+                    $filepath = __DIR__ . "/files/{$args["slug"]}";
 
                     if (!is_dir($filepath)) :
                         mkdir($filepath);

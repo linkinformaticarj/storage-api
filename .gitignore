@@ -1,5 +1,6 @@
+/.vscode/
 /vendor/
-/Public/storage/*
+/Public/files/*
 composer.lock
 
 .env
